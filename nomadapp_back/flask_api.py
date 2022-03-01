@@ -8,12 +8,15 @@ app.config["DEBUG"] = True
 root_path = "http://127.0.0.1:5000"
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
+def hello():
+    return "Hello World"
+
+
+@app.route("/json-request", methods=["GET"])
 def get_params():
     response = request.get_json()
-    return jsonify({'test': 1})
+    return jsonify({"test": 1})
 
 
 app.run()
-
-
