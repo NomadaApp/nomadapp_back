@@ -6,6 +6,6 @@ To run the app
  python nomadapp_back/flask_api.py
 ```
 
-Test port in the browser here `http://127.0.0.1:5000`
+Test port in the browser here `https://nomadapp-back-akukb5qdcq-ew.a.run.app`
 
-And post some json to `http://127.0.0.1:5000/json-request`
+And post some json to `https://nomadapp-back-akukb5qdcq-ew.a.run.app/json-request`

@@ -6,7 +6,6 @@ class TestGCPRequest(unittest.TestCase):
     def test_hello(self):
         url = "https://nomadapp-back-akukb5qdcq-ew.a.run.app/json-request"
         response = requests.get(url, json=None)
-        print("JSON content:", response.json())
         self.assertEqual({"test": 1}, response.json(), "I leave Python!")
 
 
