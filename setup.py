@@ -11,13 +11,13 @@ with open('requirements.txt') as f:
     required = f.read()
 
 setup(
-    name='nomadapp-back',
+    name='nomadapp_back',
     version='0.0.1',
-    description='nomadapp-back',
+    description='nomadapp_back',
     long_description=readme,
     author='Manuel Castillo-Lopez',
     author_email='manucalop@gmail.com',
-    url='https://github.com/manucalop/nomadapp-back',
+    url='https://github.com/manucalop/nomadapp_back',
     license=lic,
     packages=find_packages(exclude=('tests', 'docs')),
     install_requires=required
