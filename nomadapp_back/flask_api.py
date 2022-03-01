@@ -15,6 +15,7 @@ def hello():
 @app.route("/json-request", methods=["GET"])
 def get_params():
     response = request.get_json()
+    response["respuesta_ruben"] = response["query_antonio"] + 1
     return jsonify(response)
 
 
