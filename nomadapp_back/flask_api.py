@@ -14,9 +14,19 @@ def hello():
 
 @app.route("/json-request", methods=["GET"])
 def get_params():
-    response = request.get_json()
-    response["respuesta_ruben"] = response["query_antonio"] + 1
-    return jsonify(response)
+    query = request.get_json()
+
+    selection = [key for key, item in query.items() if item == "True"]
+    radius = query.get("radius")
+    location = query.get("location")
+
+    results = {
+        "Recibido Antonio": True,
+        "selection": selection,
+        "radius": radius,
+        "location": location,
+    }
+    return jsonify(results)
 
 
 app.run(host="0.0.0.0")
