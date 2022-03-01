@@ -1,60 +1,36 @@
+from utils import query_execution, get_coordinates
 import googlemaps
-import pandas as pd
-from Class_definitions import Coworking, Education, Food_and_Drinks
 
-df = pd.read_csv('../data.csv')
-API_KEY = 'AIzaSyCMxtTJa-B0ojºhq7zsyw84g0TvncgEU7Yc'
+params = {
+    "selection": [
+        "Food_and_Drinks", "Education"],
+    "location": "Barrio Salamanca",
+    "radius": 2000
+}
 
-try:
-    gmaps = googlemaps.Client(key=API_KEY)
+API_KEY = 'AIzaSyCMxtTJa-B0ojhq7zsyw84g0TvncgEU7Yc'
 
-except ValueError as e:
-    print(e)
 
-def query_execution(final_selection : dict):
+def gm_client(key: str):
+    try:
+        return googlemaps.Client(key=key)
+    except ValueError as e:
+        print(e)
 
-    final_data = pd.DataFrame()
-
-    if 'Education' in final_selection.keys():
-        education = Education(point, radius, gmaps)
-        e_request = education.api_request()
-        ed_table = education.json_to_table(e_request)
-        ed_table['Type'] = 'Education'
-        final_data = pd.concat([final_data, ed_table])
-
-    if 'Coworking' in final_selection.keys():
-        coworking = Coworking(point, radius, gmaps)
-        c_request = coworking.api_request()
-        co_table = coworking.json_to_table(c_request)
-        co_table['Type'] = 'Coworking'
-        final_data = pd.concat([final_data, co_table])
-
-    if 'Food_and_Drinks' in final_selection.keys():
-        food_drinks = Food_and_Drinks(point, radius, gmaps)
-        f_request = food_drinks.api_request()
-        food_table = food_drinks.json_to_table(f_request)
-        food_table['Type'] = 'Food and Drinks'
-        final_data = pd.concat([final_data, food_table])
-
-    return final_data
 
 if __name__ == "__main__":
 
-    '''
-    GETTING COORDINATES FROM STRING
-    '''
+    # Instantiate the Google.client class
+    gmaps = gm_client(API_KEY)
 
-    coordinates = gmaps.geocode('Barrio Salamanca, Madrid')
-    # Middle of the district
-    point = coordinates[0]['geometry'].get('location')
-    radius = 2000
+    # Get the coordinates selected by the user
+    coordinates = get_coordinates(params.get('location'), gmaps)
 
-    '''GETTING FILTER OBJECTS FROM DICTIONARY'''
+    # Get the radius selected by the user
+    radius = params.get('radius')
 
-    dict_params = {'Coworking': True, 'Education': False, 'Food_and_Drinks': True, 'Leisure': False}
-    final_selection = dict(filter(lambda x: x[1] is True, dict_params.items()))
+    # Execute query through function
+    results_dataframe = query_execution(params.get('selection'), coordinates, radius, gmaps)
 
-    final_table = query_execution(final_selection)
-    final_table.to_csv('data.csv', index = False)
-
-
+    # Save the table with the results from the query
+    results_dataframe.to_csv('data.csv', index=False)
