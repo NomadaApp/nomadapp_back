@@ -15,7 +15,7 @@ def hello():
 @app.route("/json-request", methods=["GET"])
 def get_params():
     response = request.get_json()
-    return jsonify({"test": 1})
+    return jsonify(response)
 
 
 app.run(host="0.0.0.0")
