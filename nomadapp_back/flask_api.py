@@ -2,8 +2,6 @@ from flask import Flask, jsonify, request
 from googlemaps_requests import gm_client, API_KEY, query_execution, get_coordinates
 import os
 
-
-
 app = Flask(__name__)
 
 
