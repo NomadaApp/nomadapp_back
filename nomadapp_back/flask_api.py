@@ -1,10 +1,9 @@
 from flask import Flask, jsonify, request
+import os
 import sqlite3
 import requests
 
 app = Flask(__name__)
-
-root_path = "http://127.0.0.1:5000"
 
 
 @app.route("/", methods=["GET"])
@@ -29,4 +28,5 @@ def get_params():
     return jsonify(results)
 
 
-app.run(host="0.0.0.0")
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
