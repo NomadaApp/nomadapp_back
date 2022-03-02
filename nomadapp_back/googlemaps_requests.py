@@ -1,12 +1,7 @@
-from utils import query_execution, get_coordinates
+import pandas as pd
+from Class_definitions import Education, Restaurants, Leisure, Coworking
 import googlemaps
 
-params = {
-    "selection": [
-        "Food_and_Drinks", "Education"],
-    "location": "Barrio Salamanca",
-    "radius": 2000
-}
 
 API_KEY = 'AIzaSyCMxtTJa-B0ojhq7zsyw84g0TvncgEU7Yc'
 
@@ -18,19 +13,44 @@ def gm_client(key: str):
         print(e)
 
 
-if __name__ == "__main__":
+def get_coordinates(location: str, gmaps_obj):
+    coordinates = gmaps_obj.geocode(location)
+    # Middle of the district
+    point = coordinates[0]['geometry'].get('location')
+    return point
 
-    # Instantiate the Google.client class
-    gmaps = gm_client(API_KEY)
 
-    # Get the coordinates selected by the user
-    coordinates = get_coordinates(params.get('location'), gmaps)
+def query_execution(selection: list, point: dict, radius: int, gmaps: googlemaps.client.Client):
 
-    # Get the radius selected by the user
-    radius = params.get('radius')
+    final_data = pd.DataFrame()
 
-    # Execute query through function
-    results_dataframe = query_execution(params.get('selection'), coordinates, radius, gmaps)
+    if 'education' in selection:
+        education = Education(point, radius, gmaps)
+        e_request = education.api_request()
+        ed_table = education.json_to_table(e_request)
+        ed_table['Type'] = 'education'
+        final_data = pd.concat([final_data, ed_table])
 
-    # Save the table with the results from the query
-    results_dataframe.to_csv('data.csv', index=False)
+    if 'coworking' in selection:
+        coworking = Coworking(point, radius, gmaps)
+        c_request = coworking.api_request()
+        co_table = coworking.json_to_table(c_request)
+        co_table['Type'] = 'coworking'
+        final_data = pd.concat([final_data, co_table])
+
+    if 'restaurants' in selection:
+        food_drinks = Restaurants(point, radius, gmaps)
+        f_request = food_drinks.api_request()
+        food_table = food_drinks.json_to_table(f_request)
+        food_table['Type'] = 'restaurants'
+        final_data = pd.concat([final_data, food_table])
+
+    if 'leisure' in selection:
+        leisure = Leisure(point, radius, gmaps)
+        l_request = leisure.api_request()
+        le_table = leisure.json_to_table(l_request)
+        le_table['Type'] = 'leisure'
+        final_data = pd.concat([final_data, le_table])
+
+    return final_data
+
