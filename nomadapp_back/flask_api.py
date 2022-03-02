@@ -13,9 +13,11 @@ def hello():
 
 @app.route("/json-request", methods=["GET"])
 def get_params():
-    query = request.get_json()
+    # query = request.get_json()
+    query = request.args
 
-    selection = [key for key, item in query.items() if item == "True"]
+    # selection = [key for key, item in query.items() if item == "True"]
+    selection = []
     radius = query.get("radius")
     location = query.get("location")
 
