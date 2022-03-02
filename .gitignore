@@ -1,2 +1,6 @@
 *__pycache__*
 venv*
+.DS_Store
+.Dockerfile.swp
+.git.swp
+.idea*
