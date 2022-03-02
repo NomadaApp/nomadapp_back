@@ -21,6 +21,7 @@ def get_params():
     location = get_coordinates(query.get("location"), gmaps)
 
     query_dataframe = query_execution(selection, location, radius, gmaps)
+    query_dataframe.reset_index(drop=True, inplace=True)
     results = query_dataframe.to_json()
     return jsonify(results)
 

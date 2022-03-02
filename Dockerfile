@@ -4,7 +4,7 @@ ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
 RUN python setup.py install
-# ENV PORT 5000
+ENV PORT 5000
 # EXPOSE ${PORT}
 WORKDIR $APP_HOME/nomadapp_back
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 flask_api:app
