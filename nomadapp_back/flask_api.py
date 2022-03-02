@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
+from googlemaps_requests import gm_client, API_KEY, query_execution, get_coordinates
 import os
-import sqlite3
-import requests
+
+
 
 app = Flask(__name__)
 
@@ -13,20 +14,16 @@ def hello():
 
 @app.route("/json-request", methods=["GET"])
 def get_params():
-    # query = request.get_json()
     query = request.args
 
-    # selection = [key for key, item in query.items() if item == "True"]
-    selection = []
-    radius = query.get("radius")
-    location = query.get("location")
+    gmaps = gm_client(API_KEY)
 
-    results = {
-        "Recibido Antonio": True,
-        "selection": selection,
-        "radius": radius,
-        "location": location,
-    }
+    selection = [key for key, item in query.items() if item == "True"]
+    radius = query.get("radius")
+    location = get_coordinates(query.get("location"), gmaps)
+
+    query_dataframe = query_execution(selection, location, radius, gmaps)
+    results = query_dataframe.to_json()
     return jsonify(results)
 
 
