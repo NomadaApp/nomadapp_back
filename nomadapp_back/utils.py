@@ -1,8 +1,15 @@
 import geopy.distance
+import logging
+
+logger = logging.getLogger().getChild(__name__)
 
 
 def distance_from_location(coord, location):
-    return (geopy.distance.great_circle(coord, location).km)
+    try:
+        distance = geopy.distance.great_circle(coord, location).km
+        return distance
+    except ValueError:
+        logger.warning('Error calculating distances between two locations')
 
 
 def create_distance_column(query, coordinates):
