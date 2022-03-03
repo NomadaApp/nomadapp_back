@@ -3,7 +3,7 @@ import requests
 from nomadapp_back import flask_api
 
 
-class TestApiRequest(unittest.TestCase):
+class TestGCPRequest(unittest.TestCase):
     def test_hello(self):
         url = "https://nomadapp-back-akukb5qdcq-ew.a.run.app/json-request"
         query = {
@@ -14,10 +14,11 @@ class TestApiRequest(unittest.TestCase):
             "radius": 5,
             "location": "Puerta del Sol, 1",
         }
-        # response = requests.get(url, params=query)
-        # url = "https://nomadapp-back-akukb5qdcq-ew.a.run.app/json-request"
-        # response = requests.get(url, json=None)
-        # self.assertEqual({"test": 1}, response.json(), "I leave Python!")
+
+        response = requests.get(url, params=query)
+        self.assertEqual(
+            response.status_code, 200, f"I get an error {response.status_code}"
+        )
 
 
 if __name__ == "__main__":
