@@ -3,7 +3,8 @@ from nomadapp_back.googlemaps_requests import (
     gm_client,
     API_KEY,
     query_execution,
-    get_coordinates)
+    get_coordinates,
+)
 import os
 
 app = Flask(__name__)
