@@ -1,67 +1,56 @@
 import pandas as pd
 from nomadapp_back.Class_definitions import Education, Restaurants, Leisure, Coworking
 import googlemaps
-import geopy.distance
+import logging
 
+logger = logging.getLogger().getChild(__name__)
 
 API_KEY = "AIzaSyCMxtTJa-B0ojhq7zsyw84g0TvncgEU7Yc"
 
 
-def gm_client(key: str):
-    try:
-        return googlemaps.Client(key=key)
-    except ValueError as e:
-        print(e)
-
-
 def get_coordinates(location: str, gmaps_obj):
-    coordinates = gmaps_obj.geocode(location)
-    # Middle of the district
-    point = coordinates[0]["geometry"].get("location")
-    return point
-
-"""
-def distance_from_location(coord, location):
-    return (geopy.distance.great_circle(coord, location).km)
+    try:
+        coordinates = gmaps_obj.geocode(location)
+        return coordinates[0]["geometry"].get("location")
+    except IndexError:
+        raise IndexError
 
 
-def create_distance_column(query, coordinates):
-    query['coord'] = list(zip(query.lat, query.lon))
-    return list(map(lambda coord: distance_from_location(coord, coordinates.values()), query.coord))
+def query_execution(selection: list, point: dict, radius: int, gmaps: googlemaps.client.Client):
 
-"""
-def query_execution(
-    selection: list, point: dict, radius: int, gmaps: googlemaps.client.Client
-):
-
-    final_data = pd.DataFrame()
+    final_results = pd.DataFrame()
 
     if "education" in selection:
         education = Education(point, radius, gmaps)
         e_request = education.api_request()
-        ed_table = education.json_to_table(e_request)
-        ed_table["Type"] = "education"
-        final_data = pd.concat([final_data, ed_table])
+
+        education_df = education.json_to_table(e_request)
+        education_df["Type"] = "education"
+        final_results = pd.concat([final_results, education_df])
 
     if "coworking" in selection:
         coworking = Coworking(point, radius, gmaps)
         c_request = coworking.api_request()
-        co_table = coworking.json_to_table(c_request)
-        co_table["Type"] = "coworking"
-        final_data = pd.concat([final_data, co_table])
+
+        coworking_df = coworking.json_to_table(c_request)
+        coworking_df["Type"] = "coworking"
+        final_results = pd.concat([final_results, coworking_df])
 
     if "restaurants" in selection:
-        food_drinks = Restaurants(point, radius, gmaps)
-        f_request = food_drinks.api_request()
-        food_table = food_drinks.json_to_table(f_request)
-        food_table["Type"] = "restaurants"
-        final_data = pd.concat([final_data, food_table])
+        restaurants = Restaurants(point, radius, gmaps)
+        r_request = restaurants.api_request()
+
+        restaurants_df = restaurants.json_to_table(r_request)
+        restaurants_df["Type"] = "restaurants"
+        final_results = pd.concat([final_results, restaurants_df])
 
     if "leisure" in selection:
         leisure = Leisure(point, radius, gmaps)
         l_request = leisure.api_request()
-        le_table = leisure.json_to_table(l_request)
-        le_table["Type"] = "leisure"
-        final_data = pd.concat([final_data, le_table])
 
-    return final_data
+        leisure_df = leisure.json_to_table(l_request)
+        leisure_df["Type"] = "leisure"
+        final_results = pd.concat([final_results, leisure_df])
+
+    return final_results
+
