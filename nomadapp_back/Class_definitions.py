@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+from nomadapp_back.utils import create_distance_column
 
 
 class Filters(ABC):
@@ -13,8 +14,8 @@ class Filters(ABC):
     def api_request(self):
         pass
 
-    @staticmethod
-    def json_to_table(query_json):
+
+    def json_to_table(self, query_json):
         query_df = pd.DataFrame()
 
         query_df['Name'] = pd.Series(map(lambda name: name['name'], query_json['results']))
@@ -22,9 +23,11 @@ class Filters(ABC):
                                         query_json['results']))
         query_df['lon'] = pd.Series(map(lambda long: long['geometry'].get('location').get('lng'),
                                         query_json['results']))
+        query_df['distance_from_location'] = create_distance_column(query_df, self.location)
+        query_df_filtered = query_df[query_df['distance_from_location'] <= int(self.radius)]
         # query_df['status'] = pd.Series(map(lambda status: status['business_status'], query_json['results']))
         # query_df['rating'] = pd.Series(map(lambda status: status['rating'], query_json['results']))
-        return query_df
+        return query_df_filtered
 
 
 class Coworking(Filters):
