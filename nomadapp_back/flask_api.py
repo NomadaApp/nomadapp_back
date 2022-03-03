@@ -12,7 +12,7 @@ from nomadapp_back.googlemaps_requests import (
 
 app = Flask(__name__)
 
-logging.config.fileConfig('../logger/logging.conf')
+logging.config.fileConfig('logger/logging.conf')
 logger = logging.getLogger(__name__)
 
 
