@@ -1,6 +1,7 @@
 import pandas as pd
 from nomadapp_back.Class_definitions import Education, Restaurants, Leisure, Coworking
 import googlemaps
+import geopy.distance
 
 
 API_KEY = "AIzaSyCMxtTJa-B0ojhq7zsyw84g0TvncgEU7Yc"
@@ -19,7 +20,16 @@ def get_coordinates(location: str, gmaps_obj):
     point = coordinates[0]["geometry"].get("location")
     return point
 
+"""
+def distance_from_location(coord, location):
+    return (geopy.distance.great_circle(coord, location).km)
 
+
+def create_distance_column(query, coordinates):
+    query['coord'] = list(zip(query.lat, query.lon))
+    return list(map(lambda coord: distance_from_location(coord, coordinates.values()), query.coord))
+
+"""
 def query_execution(
     selection: list, point: dict, radius: int, gmaps: googlemaps.client.Client
 ):
