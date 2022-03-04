@@ -4,3 +4,4 @@ venv*
 .Dockerfile.swp
 .git.swp
 .idea*
+logger/*.log
