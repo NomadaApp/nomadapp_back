@@ -19,7 +19,7 @@ def distance_from_location(coord: tuple, location: tuple):
         distance = geopy.distance.great_circle(coord, location).km
         return distance
     except ValueError:
-        logger.warning('Error calculating distances between two locations')
+        logger.warning("Error calculating distances between two locations")
 
 
 def create_distance_column(query, coordinates: dict):
@@ -32,5 +32,10 @@ def create_distance_column(query, coordinates: dict):
     Returns:
         List with the distances between each coordinate of the daframe column 'coord' and the givben coordinates
     """
-    query['coord'] = list(zip(query.lat, query.lon))
-    return list(map(lambda coord: distance_from_location(coord, coordinates.values()), query.coord))
+    query["coord"] = list(zip(query.lat, query.lon))
+    return list(
+        map(
+            lambda coord: distance_from_location(coord, coordinates.values()),
+            query.coord,
+        )
+    )
